@@ -1,20 +1,4 @@
 module EEEval
-  class Token
-    property value : String = ""
-    property type : Type = Type::Undefined
-
-    def initialize(@value, @type)
-    end
-
-    enum Type
-      Operator
-      String
-      Number
-      Boolean
-      Undefined
-    end
-  end
-
   class CondParser
     def self.precedence(operator : String)
       precedence : Int32
@@ -103,8 +87,6 @@ module EEEval
       while (i < tokens.size)
         if (tokens[i].type != Token::Type::Operator)
           stack.push tokens[i]
-          stack.push tokens[i + 1]
-          i = i + 1
           tmp = stack.map do |tk|
             tk.value
           end
@@ -124,8 +106,8 @@ module EEEval
     end
 
     macro parser_condition(operator)
-    operand1 = stack.pop
     operand2 = stack.pop
+    operand1 = stack.pop
     {% op = "undefined" %}
     {% op = "==" if operator.id == "EQUAL" %}
     {% op = "!=" if operator.id == "NOT_EQUAL" %}
@@ -147,8 +129,8 @@ module EEEval
     end
 
     macro parser_condition_bool(operator)
-    operand1 = stack.pop
     operand2 = stack.pop
+    operand1 = stack.pop
     {% op = "undefined" %}
     {% op = "||" if operator.id == "OR" %}
     {% op = "&&" if operator.id == "AND" %}
