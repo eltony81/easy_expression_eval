@@ -106,42 +106,42 @@ module EEEval
     end
 
     macro parser_condition(operator)
-    operand2 = stack.pop
-    operand1 = stack.pop
-    {% op = "undefined" %}
-    {% op = "==" if operator.id == "EQUAL" %}
-    {% op = "!=" if operator.id == "NOT_EQUAL" %}
-    if (operand1.type == Token::Type::String)
-      truth = operand1.value {{op.id}} operand2.value
-      result = Token.new(truth.to_s, Token::Type::Boolean)
-      stack.push(result)
-      tmp = stack.map do |tk|
-        tk.value
+      operand2 = stack.pop
+      operand1 = stack.pop
+      {% op = "undefined" %}
+      {% op = "==" if operator.id == "EQUAL" %}
+      {% op = "!=" if operator.id == "NOT_EQUAL" %}
+      if (operand1.type == Token::Type::String)
+        truth = operand1.value {{op.id}} operand2.value
+        result = Token.new(truth.to_s, Token::Type::Boolean)
+        stack.push(result)
+        tmp = stack.map do |tk|
+          tk.value
+        end
+      elsif (operand1.type == Token::Type::Number)
+        truth = operand1.value.to_f {{op.id}} operand2.value.to_f
+        result = Token.new(truth.to_s, Token::Type::Boolean)
+        stack.push(result)
+        tmp = stack.map do |tk|
+          tk.value
+        end
       end
-    elsif (operand1.type == Token::Type::Number)
-      truth = operand1.value.to_f {{op.id}} operand2.value.to_f
-      result = Token.new(truth.to_s, Token::Type::Boolean)
-      stack.push(result)
-      tmp = stack.map do |tk|
-        tk.value
-      end
-    end
     end
 
     macro parser_condition_bool(operator)
-    operand2 = stack.pop
-    operand1 = stack.pop
-    {% op = "undefined" %}
-    {% op = "||" if operator.id == "OR" %}
-    {% op = "&&" if operator.id == "AND" %}
-    if (operand1.type == Token::Type::Boolean)
-      truth = (operand1.value == "true" {{op.id}} operand2.value == "true").to_s
-      result = Token.new(truth, Token::Type::Boolean)
-      stack.push(result)
-      tmp = stack.map do |tk|
-        tk.value
+      operand2 = stack.pop
+      operand1 = stack.pop
+      {% op = "undefined" %}
+      {% op = "||" if operator.id == "OR" %}
+      {% op = "&&" if operator.id == "AND" %}
+      if (operand1.type == Token::Type::Boolean)
+        truth = (operand1.value == "true" {{op.id}} operand2.value == "true").to_s
+        result = Token.new(truth, Token::Type::Boolean)
+        stack.push(result)
+        tmp = stack.map do |tk|
+          tk.value
+        end
       end
-    end
     end
   end
 end
