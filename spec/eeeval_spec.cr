@@ -39,16 +39,22 @@ describe EEEval::CalcParser do
       tokens.size.should eq(11)
       expected = ["14.2", "14.2", "+", "4", "*", "2", "/", "10.5", "2", "^", "*"]
       result = tokens.map &.value
-      puts result
       result.should eq(expected)
     end
   end
   describe "#evaluate_rpn" do
-    it "Evaluate rpn expression returning boolean literal string" do
+    it "Evaluate rpn expression returning numeric value" do
       expression = "(14.2 + 14.2) * 4 / 2 * 10.5 ^ 2"
       tokens = EEEval::CalcParser.infix_to_rpn(expression)
       result = EEEval::CalcParser.evaluate_rpn(tokens)
       result.value.should eq(6262.2)
+    end
+  end
+  describe "#evaluate" do
+    it "Evaluate expression returning numeric value" do
+      expression = "(14.2 + 14.2) * 4 / 2 * 10.5 ^ 2"
+      result = EEEval::CalcParser.evaluate(expression)
+      result.should eq(6262.2)
     end
   end
 end

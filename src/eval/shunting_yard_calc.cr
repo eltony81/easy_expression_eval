@@ -87,7 +87,6 @@ module EEEval
       while (i < tokens.size)
         if (tokens[i].type != Token::Type::Operator)
           stack.push tokens[i]
-          puts "stack after #{stack.map &.value}"
           tmp = stack.map do |tk|
             tk.value
           end
