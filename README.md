@@ -9,7 +9,7 @@ TODO: Write a description here
    ```yaml
    dependencies:
      eeeval:
-       github: your-github-user/eeeval
+       github: eltony81/eeeval
    ```
 
 2. Run `shards install`
@@ -36,4 +36,4 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [accentony](https://github.com/your-github-user) - creator and maintainer
+- [eltony81](https://github.com/eltony81) - creator and maintainer
