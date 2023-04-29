@@ -1,6 +1,6 @@
 # eeeval
 
-TODO: Write a description here
+Easy Expression Eval
 
 ## Installation
 
