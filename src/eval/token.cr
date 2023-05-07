@@ -1,4 +1,7 @@
 module EEEval
+
+  FUNC_REGEX = /\w{2,}\([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)\)/
+
   class Token
     property value : String | Float64
     property type : Type = Type::Undefined

@@ -4,13 +4,13 @@ require "./eval/*"
 module EEEval
   class CondParser
     def self.evaluate(expression)
-      evaluate_rpn(infix_to_rpn expression).value == "true"
+      evaluate_rpn(infix_to_rpn expression.delete(" ")).value == "true"
     end
   end
 
   class CalcParser
     def self.evaluate(expression)
-      evaluate_rpn(infix_to_rpn expression).value
+      evaluate_rpn(infix_to_rpn expression.delete(" ")).value
     end
   end
 end

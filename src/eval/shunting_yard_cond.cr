@@ -26,6 +26,7 @@ module EEEval
 
         if (chr == '=' || chr == '!' || chr == '|' || chr == '&')
           operator = "#{chr}#{expression[i + 1]}"
+          i = i + 1
           while (!stack.empty? && precedence(operator) <= precedence(stack.last))
             output << Token.new(stack.pop, Token::Type::Operator)
           end
@@ -33,6 +34,7 @@ module EEEval
           i = i + 1
         elsif (chr == '(')
           stack.push(chr.to_s)
+          i = i + 1
         elsif (chr == ')')
           while (!stack.empty?)
             if (stack.last == "(")
@@ -41,6 +43,7 @@ module EEEval
             end
             output << Token.new(stack.pop, Token::Type::Operator)
           end
+          i = i + 1
         elsif (chr.number?)
           num = chr.to_s
           while (i + 1 < expr_length && (expression[i + 1].number? || expression[i + 1] == '.'))
@@ -48,6 +51,7 @@ module EEEval
             i = i + 1
           end
           output.push(Token.new(num, Token::Type::Number))
+          i = i + 1
         elsif (chr == '\'')
           str = ""
           while (i + 1 < expr_length)
@@ -58,8 +62,8 @@ module EEEval
             end
           end
           output.push(Token.new(str, Token::Type::String))
+          i = i + 1
         end
-        i = i + 1
       end
 
       while (!stack.empty?)

@@ -1,9 +1,17 @@
 require "./spec_helper"
 
 describe EEEval::CondParser do
-  describe "#infix_to_rpn" do
+  describe "#infix_to_rpn", tags: "nospaces" do
+    it "Convert infix notation to rpn no spaces" do
+      expression = "14==14&&'ciao'=='ciao'"
+      tokens = EEEval::CondParser.infix_to_rpn(expression)
+      tokens.size.should eq(7)
+      expected = ["14", "14", "==", "ciao", "ciao", "==", "&&"]
+      result = tokens.map &.value
+      result.should eq(expected)
+    end
     it "Convert infix notation to rpn" do
-      expression = "14 == 14 && 1 == 3 || (1==3 && 4==2) && '2' != '3' || 'ciao' == 'ciao'"
+      expression = "14==14 && 1 == 3||(1==3 && 4==2) && '2' != '3'||'ciao' == 'ciao'"
       tokens = EEEval::CondParser.infix_to_rpn(expression)
       tokens.size.should eq(23)
       expected = ["14", "14", "==", "1", "3", "==", "&&", "1", "3", "==", "4", "2", "==", "&&", "||", "2", "3", "!=", "&&", "ciao", "ciao", "==", "||"]
@@ -32,7 +40,15 @@ describe EEEval::CondParser do
 end
 
 describe EEEval::CalcParser do
-  describe "#infix_to_rpn" do
+  describe "#infix_to_rpn", tags: "nospaces" do
+    it "Convert infix notation to rpn no spaces" do
+      expression = "(14.2+14.2)"
+      tokens = EEEval::CalcParser.infix_to_rpn(expression)
+      tokens.size.should eq(3)
+      expected = ["14.2", "14.2", "+"]
+      result = tokens.map &.value
+      result.should eq(expected)
+    end
     it "Convert infix notation to rpn" do
       expression = "(14.2 + 14.2) * 4 / 2 * 10.5 ^ 2"
       tokens = EEEval::CalcParser.infix_to_rpn(expression)
