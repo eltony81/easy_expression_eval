@@ -50,7 +50,7 @@ describe EEEval::CalcParser do
       result.should eq(expected)
     end
     it "Convert infix notation to rpn" do
-      expression = "(14.2 + 14.2) * 4 / 2 * 10.5 ^ 2"
+      expression = "(14.2 + 14.2) * 4 / 2 *10.5^2"
       tokens = EEEval::CalcParser.infix_to_rpn(expression)
       tokens.size.should eq(11)
       expected = ["14.2", "14.2", "+", "4", "*", "2", "/", "10.5", "2", "^", "*"]
@@ -100,6 +100,40 @@ describe EEEval::CalcParser do
       expression = "(((((10 / 2) * 5) - 8) + 15) / 5) * ((7 - 3) * 6) - (11 + 3) * 2 + 9 * (((9 / 3) * 2) - 1) - 5 * (12 - 3) + 16 / 4 + 20 - 9 * (5 - 3) + ((((((2 + 3) * 4) - 6) / 2) + 5) * ((7 - 4) * 3) - (9 + 1) * 4 + 8 * (((4 / 2) * 3) - 1) - 7 * (5 - 2) + 14 / 2 + 19 - 5 * (6 - 4) + (((((8 / 2) * 6) - 9) + 3) / 3) * ((5 - 2) * 4) - (10 + 2) * 3 + 7 * (((6 / 3) * 5) - 2) - 4 * (8 - 6) + 12 / 2 + 15 - 8 * (4 - 2)))"
       result = EEEval::CalcParser.evaluate(expression)
       result.to_f.format(separator: ".", delimiter: "", decimal_places: 2).should eq("323.60")
+    end
+  end
+end
+
+describe EEEval::MathFuncResolver do
+  describe "#resolve" do
+    it "Resolve math func expr" do
+      expression = EEEval::MathFuncResolver.resolve("( log(14.2) + log(15.2) - log(16 + 4 + log(4 + 1)) )")
+    end
+  end
+
+  describe "#search_expr" do
+    it "search_expr paremthesees closed" do
+      expr = EEEval::MathFuncResolver.search_expr("(16 + 4 + 45 / 8) + 67 / (23 - 4)")
+      expected = "16 + 4 + 45 / 8"
+      expr.should eq(expected)
+    end
+
+    it "search_expr paremthesees opened" do
+      expr = EEEval::MathFuncResolver.search_expr("(16 + 4 + 45 / 8 + 67 / (23 - 4)")
+      expr.should eq(nil)
+    end
+  end
+
+  describe "#evaluate" do
+    it "Evaluate" do
+      expression = EEEval::MathFuncResolver.evaluate("cos(2.5 + sin(4))")
+      puts expression
+    end
+  end
+
+  describe "#evaluate" do
+    it "Resolve math func expr" do
+      expression = EEEval::MathFuncResolver.evaluate("( log(14.2) + log(15.2) - log(16 + 4 + log(4 + 1)) )")
     end
   end
 end
