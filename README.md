@@ -38,4 +38,4 @@ TODO: Write development instructions here
 
 - [eltony81](https://github.com/eltony81) - creator and maintainer
 
-[![GitHub release](https://img.shields.io/github/release/eltony81/eeeval.svg)](https://github.com/eltony81/eeeval/releases)
+[![GitHub release](https://img.shields.io/github/release/eltony81/eeeval.svg)](https://github.com/eltony81/easy_expression_eval/releases)
