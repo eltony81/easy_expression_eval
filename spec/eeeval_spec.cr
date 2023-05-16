@@ -136,4 +136,16 @@ describe EEEval::MathFuncResolver do
       expression = EEEval::MathFuncResolver.evaluate("( log(14.2) + log(15.2) - log(16 + 4 + log(4 + 1)) )")
     end
   end
+
+  describe "#evaluate" do
+    it "Resolve math func expr" do
+      expression = EEEval::MathFuncResolver.evaluate("1 + exp(log(14.2))")
+    end
+  end
+
+  describe "#evaluate" do
+    it "Resolve math func expr" do
+      expression = EEEval::MathFuncResolver.evaluate("sin(0.5)^2 + cos(0.5)^2")
+    end
+  end
 end

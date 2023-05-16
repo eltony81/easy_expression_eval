@@ -34,7 +34,6 @@ module EEEval
         {% end %}
         {% tmp = tmp + "end" %}
         !expression.matches? /{{tmp.id}}/
-        {{debug}}
       end
 
       def self.evaluate(expression)
