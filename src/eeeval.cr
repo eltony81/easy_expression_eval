@@ -19,4 +19,15 @@ module EEEval
       end
     end
   end
+
+  class CalcFuncParser
+    def self.evaluate(expression)
+      expression = expression.delete(" ").gsub("+-") { "-" }.gsub("-+") { "-" }.gsub("--") { "-" }.gsub("++") { "+" }
+      unless (expression.to_f64?)
+        EEEval::MathFuncResolver.evaluate(expression)
+      else
+        expression
+      end
+    end
+  end
 end

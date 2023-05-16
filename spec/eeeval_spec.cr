@@ -127,25 +127,38 @@ describe EEEval::MathFuncResolver do
   describe "#evaluate" do
     it "Evaluate" do
       expression = EEEval::MathFuncResolver.evaluate("cos(2.5 + sin(4))")
-      puts expression
+      expression.to_f64.should eq(-0.17154842342764115)
     end
   end
 
   describe "#evaluate" do
     it "Resolve math func expr" do
       expression = EEEval::MathFuncResolver.evaluate("( log(14.2) + log(15.2) - log(16 + 4 + log(4 + 1)) )")
+      expression.should eq(2.3014072328095136)
     end
   end
 
   describe "#evaluate" do
     it "Resolve math func expr" do
       expression = EEEval::MathFuncResolver.evaluate("1 + exp(log(14.2))")
+      expression.should eq(15.2)
     end
   end
 
   describe "#evaluate" do
     it "Resolve math func expr" do
       expression = EEEval::MathFuncResolver.evaluate("sin(0.5)^2 + cos(0.5)^2")
+      expression.should eq(1)
+    end
+  end
+
+end
+
+describe EEEval::CalcFuncParser do
+  describe "#evaluate" do
+    it "Resolve math func expr" do
+      expression = EEEval::CalcFuncParser.evaluate("sin(0.5)^2 + cos(0.5 + log(4/6))^2")
+      expression.should eq(1.2209385919826568)
     end
   end
 end
