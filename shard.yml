@@ -2,8 +2,8 @@ name: eeeval
 version: 0.1.0
 
 authors:
-  - adifluri <antonio.difluri@gmail.com>
+  - eltony81 <antonio.difluri@gmail.com>
 
-crystal: 1.5.0
+crystal: ">= 1.0.0, < 2.0.0"
 
 license: MIT
