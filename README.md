@@ -9,7 +9,7 @@ Easy Expression Eval
    ```yaml
    dependencies:
      eeeval:
-       github: eltony81/eeeval
+       github: eltony81/easy_expression_eval
    ```
 
 2. Run `shards install`
