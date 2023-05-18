@@ -127,8 +127,8 @@ describe EEEval::MathFuncResolver do
 
   describe "#evaluate" do
     it "Evaluate" do
-      expression = EEEval::MathFuncResolver.evaluate("cos(2.5 + sin(4))")
-      expression.to_f64.should eq(-0.17154842342764115)
+      expression = EEEval::MathFuncResolver.evaluate("cos(6^(exp(2/cos(7.6/8))))")
+      expression.to_f64.should eq(-0.7590461129784705)
     end
   end
 

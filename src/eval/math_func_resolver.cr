@@ -37,7 +37,7 @@ module EEEval
       end
 
       def self.evaluate(expression)
-        #puts "RESOLVER 1: evaluating expression: #{expression}"
+        puts "RESOLVER 1: evaluating expression: #{expression}"
         expression = resolve(expression)
         i=0
         until resolved?(expression)
@@ -46,7 +46,7 @@ module EEEval
           break if i > 1000
         end
         expression = EEEval::CalcParser.evaluate(expression)
-        #puts "evaluated expression: #{expression}"
+        puts "evaluated expression: #{expression}"
         expression
       end
 
@@ -64,7 +64,7 @@ module EEEval
 
         replaces.each do |key, value|
           expression = expression.gsub(key) { value }
-          #puts "RESOLVER 1.1: #{expression}"
+          puts "RESOLVER 1.1: #{expression}"
         end
         expression = resolve_expr(expression)
         expression
@@ -79,7 +79,7 @@ module EEEval
           expr.try do |expr|
             key = "{{mfunc.id}}(#{expr})"
             num = EEEval::CalcParser.evaluate(expr)
-            #puts "RESOLVER 2.1: {{mfunc.id}}(#{num})"
+            puts "RESOLVER 2.1: {{mfunc.id}}(#{num})"
             replaces[key] = Math.{{mfunc.id}}(num.to_f64)
           end
         end
@@ -87,7 +87,7 @@ module EEEval
 
         replaces.each do |key, value|
           expression = expression.gsub(key) { value }
-          #puts "RESOLVER 2.2: #{expression}"
+          puts "RESOLVER 2.2: #{expression}"
         end
         expression
       end
