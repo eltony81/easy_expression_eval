@@ -29,9 +29,11 @@ module EEEval
 
     macro mfunc_evaluator
 
+      {% funcs = %w(log exp sin cos sqrt tan atan asin acos exp2 log10 log2) %}
+
       def self.resolved?(expression)
         {% tmp = "" %}
-        {% for mfunc in %w(log exp sin cos) %}
+        {% for mfunc in funcs %}
         {% tmp = tmp + mfunc + "|" %}
         {% end %}
         {% tmp = tmp + "end" %}
@@ -39,7 +41,7 @@ module EEEval
       end
 
       def self.evaluate(expression)
-        Log.debug { "RESOLVER 1: evaluating expression: #{expression}" }
+        Log.trace { "RESOLVER 1: evaluating expression: #{expression}" }
         expression = resolve(expression)
         i=0
         until resolved?(expression)
@@ -48,14 +50,14 @@ module EEEval
           break if i > 1000
         end
         expression = EEEval::CalcParser.evaluate(expression)
-        Log.debug { "evaluated expression: #{expression}" }
+        Log.trace { "evaluated expression: #{expression}" }
         expression
       end
 
       def self.resolve(expression)
         replaces = Hash(String, Float64).new
 
-        {% for mfunc in %w(log exp sin cos) %}
+        {% for mfunc in funcs %}
         expression.scan(FUNC_REGEX_CONST) do |md|
           if md[0].starts_with?("{{mfunc.id}}")
             num = md[0].delete("{{mfunc.id}}(").delete(")")
@@ -66,7 +68,7 @@ module EEEval
 
         replaces.each do |key, value|
           expression = expression.gsub(key) { value }
-          Log.debug { "RESOLVER 1.1: #{expression}" }
+          Log.trace { "RESOLVER 1.1: #{expression}" }
         end
         expression = resolve_expr(expression)
         expression
@@ -75,13 +77,13 @@ module EEEval
       def self.resolve_expr(expression)
         replaces = Hash(String, Float64).new
 
-        {% for mfunc in %w(log exp sin cos) %}
+        {% for mfunc in funcs %}
         expression.scan(/(?<={{mfunc.id}})\([\d+\s\)\(\-\+\/\^\.]*/) do |md|
           expr = search_expr(md[0])
           expr.try do |expr|
             key = "{{mfunc.id}}(#{expr})"
             num = EEEval::CalcParser.evaluate(expr)
-            Log.debug { "RESOLVER 2.1: {{mfunc.id}}(#{num})" }
+            Log.trace { "RESOLVER 2.1: {{mfunc.id}}(#{num})" }
             replaces[key] = Math.{{mfunc.id}}(num.to_f64)
           end
         end
@@ -89,7 +91,7 @@ module EEEval
 
         replaces.each do |key, value|
           expression = expression.gsub(key) { value }
-          Log.debug { "RESOLVER 2.2: #{expression}" }
+          Log.trace { "RESOLVER 2.2: #{expression}" }
         end
         expression
       end
