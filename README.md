@@ -40,4 +40,4 @@ Note: the current implementation does support only sin, cos, log, exp function
 
 - [eltony81](https://github.com/eltony81) - creator and maintainer
 
-[![GitHub release](https://img.shields.io/github/release/eltony81/eeeval.svg)](/github/v/release/eltony81/easy_expression_eval?display_name=tag)
+[![GitHub release](https://img.shields.io/github/v/release/eltony81/easy_expression_eval?display_name=tag)
