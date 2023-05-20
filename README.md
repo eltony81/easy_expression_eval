@@ -26,9 +26,7 @@ puts result
 Note: the current implementation does support only sin, cos, log, exp function
 
 
-## Development
 
-TODO: Write development instructions here
 
 ## Contributing
 
