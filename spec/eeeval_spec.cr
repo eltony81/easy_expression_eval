@@ -102,6 +102,14 @@ describe EEEval::CalcParser do
       result.to_f.format(separator: ".", delimiter: "", decimal_places: 2).should eq("323.60")
     end
   end
+
+  describe "#evaluate", tags: "sign" do
+    it "Evaluate expression with minus/plus sign" do
+      expression = "-2^(-3)"
+      result = EEEval::CalcParser.evaluate(expression)
+      puts result
+    end
+  end
 end
 
 describe EEEval::MathFuncResolver do
@@ -152,7 +160,6 @@ describe EEEval::MathFuncResolver do
       expression.should eq(1)
     end
   end
-
 end
 
 describe EEEval::CalcFuncParser do

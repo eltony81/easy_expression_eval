@@ -13,9 +13,9 @@ module EEEval
   class CalcParser
     def self.evaluate(expression)
       raise Exception.new("malformed expression: check parentheeses") if(expression.count('(') != expression.count(')'))
-      expression = expression.delete(" ").gsub("+-") { "-" }.gsub("-+") { "-" }.gsub("--") { "+" }.gsub("++") { "+" }
-      expression = expression.gsub(/(?<=\()\-/, "0-").gsub(/(?<=\()\+/, "0+").gsub("^-", "0-").gsub("^+", "0+")
-      unless (expression.to_f64?)
+      expression = expression.delete(" ").gsub("+-", "-").gsub("-+", "-").gsub("--", "+").gsub("++", "+")
+      expression = expression.gsub(/(?<=\()\-/, "0-").gsub(/(?<=\()\+/, "0+").gsub(/^\-/, "0-").gsub(/^\+/, "0+")
+      unless (expression.to_f?)
         evaluate_rpn(infix_to_rpn expression).value
       else
         expression
@@ -26,7 +26,7 @@ module EEEval
   class CalcFuncParser
     def self.evaluate(expression)
       expression = expression.delete(" ").gsub("+-") { "-" }.gsub("-+") { "-" }.gsub("--") { "-" }.gsub("++") { "+" }
-      unless (expression.to_f64?)
+      unless (expression.to_f?)
         EEEval::MathFuncResolver.evaluate(expression)
       else
         expression
