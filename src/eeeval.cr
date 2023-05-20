@@ -14,7 +14,7 @@ module EEEval
     def self.evaluate(expression)
       raise Exception.new("malformed expression: check parentheeses") if(expression.count('(') != expression.count(')'))
       expression = expression.delete(" ").gsub("+-") { "-" }.gsub("-+") { "-" }.gsub("--") { "+" }.gsub("++") { "+" }
-      expression = expression.gsub(/(?<!\d)\-/, "0-").gsub(/(?<!\d)\+/, "0+")
+      expression = expression.gsub(/(?<=\()\-/, "0-").gsub(/(?<=\()\+/, "0+")
       unless (expression.to_f64?)
         evaluate_rpn(infix_to_rpn expression).value
       else
