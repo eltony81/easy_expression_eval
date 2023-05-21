@@ -2,6 +2,7 @@ require "./eval/*"
 
 # TODO: Write documentation for `EasyExpressionEval`
 module EEEval
+
   class CondParser
     def self.evaluate(expression)
       raise Exception.new("malformed expression: check parentheeses") if(expression.count('(') != expression.count(')'))
@@ -11,23 +12,36 @@ module EEEval
   end
 
   class CalcParser
-    def self.evaluate(expression)
-      raise Exception.new("malformed expression: check parentheeses") if(expression.count('(') != expression.count(')'))
+    def self.clear_expression(expression)
       expression = expression.delete(" ").gsub("+-", "-").gsub("-+", "-").gsub("--", "+").gsub("++", "+")
       expression = expression.gsub(/(?<=\()\-/, "0-").gsub(/(?<=\()\+/, "0+").gsub(/^\-/, "0-").gsub(/^\+/, "0+")
+      raise Exception.new("malformed expression: check parentheeses") if(expression.count('(') != expression.count(')'))
+      expression
+    end
+
+    def self.evaluate_expr(expression)
+      expression = expression.gsub("+-", "-").gsub("-+", "-").gsub("--", "+").gsub("++", "+")
       unless (expression.to_f?)
         evaluate_rpn(infix_to_rpn expression).value
       else
         expression
       end
     end
+
+    def self.evaluate(expression)
+      puts expression
+      expression = clear_expression(expression)
+      puts expression
+      evaluate_expr(expression)
+    end
+
   end
 
   class CalcFuncParser
     def self.evaluate(expression)
-      expression = expression.delete(" ").gsub("+-") { "-" }.gsub("-+") { "-" }.gsub("--") { "-" }.gsub("++") { "+" }
+      expression = CalcParser.clear_expression(expression)
       unless (expression.to_f?)
-        EEEval::MathFuncResolver.evaluate(expression)
+        MathFuncResolver.evaluate(expression)
       else
         expression
       end

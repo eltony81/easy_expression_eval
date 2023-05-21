@@ -105,7 +105,7 @@ describe EEEval::CalcParser do
 
   describe "#evaluate", tags: "sign" do
     it "Evaluate expression with minus/plus sign" do
-      expression = "-2^(-3)"
+      expression = "((-10-10)^2)"
       result = EEEval::CalcParser.evaluate(expression)
       puts result
     end
@@ -167,6 +167,13 @@ describe EEEval::CalcFuncParser do
     it "Resolve math func expr" do
       expression = EEEval::CalcFuncParser.evaluate("sin(0.5)^2 + cos(0.5 + log(4/6))^2")
       expression.should eq(1.2209385919826568)
+    end
+  end
+
+  describe "#evaluate", tags: "sign" do
+    it "Resolve math func expr sign" do
+      expression = EEEval::CalcFuncParser.evaluate("1+sin(-1/2)")
+      expression.should eq(0.520574461395797)
     end
   end
 end

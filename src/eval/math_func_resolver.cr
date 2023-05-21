@@ -49,7 +49,7 @@ module EEEval
           i=i+1
           break if i > 1000
         end
-        expression = EEEval::CalcParser.evaluate(expression)
+        expression = EEEval::CalcParser.evaluate_expr(expression)
         Log.trace { "evaluated expression: #{expression}" }
         expression
       end
@@ -82,7 +82,7 @@ module EEEval
           expr = search_expr(md[0])
           expr.try do |expr|
             key = "{{mfunc.id}}(#{expr})"
-            num = EEEval::CalcParser.evaluate(expr)
+            num = EEEval::CalcParser.evaluate_expr(expr)
             Log.trace { "RESOLVER 2.1: {{mfunc.id}}(#{num})" }
             replaces[key] = Math.{{mfunc.id}}(num.to_f64)
           end
