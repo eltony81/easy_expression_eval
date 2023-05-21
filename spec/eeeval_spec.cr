@@ -110,6 +110,14 @@ describe EEEval::CalcParser do
       puts result
     end
   end
+
+  describe "#evaluate", tags: "sci_notation" do
+    it "Evaluate expression with minus/plus sign" do
+      expression = "1+4.006529739295107e-5"
+      expression = EEEval::CalcParser.evaluate(expression)
+      expression.should eq(1.0000400652973929)
+    end
+  end
 end
 
 describe EEEval::MathFuncResolver do
@@ -174,6 +182,13 @@ describe EEEval::CalcFuncParser do
     it "Resolve math func expr sign" do
       expression = EEEval::CalcFuncParser.evaluate("1+sin(-1/2)")
       expression.should eq(0.520574461395797)
+    end
+  end
+
+  describe "#evaluate", tags: "gauss" do
+    it "Resolve math func gauss" do
+      expression = EEEval::CalcFuncParser.evaluate("1/(4*sqrt(2*3.141592653589793)) * exp(-(1/2)*((-8-10)^2)/(4^2))")
+      expression.should eq(3.9959352767263695e-6)
     end
   end
 end

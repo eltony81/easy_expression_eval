@@ -1,8 +1,6 @@
 require "log"
 
 module EEEval
-  FUNC_REGEX_CONST      = /\w{2,}\([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)\)/
-  FUNC_REGEX_INNER_EXPR = /^((?![a-zA-Z]+).)*$/
 
   class MathFuncResolver
     def self.search_expr(expression)
@@ -47,18 +45,19 @@ module EEEval
         until resolved?(expression)
           expression = resolve(expression)
           i=i+1
-          break if i > 1000
+          raise "Cannot evaluate #{expression}" if i > 1000
         end
         expression = EEEval::CalcParser.evaluate_expr(expression)
         Log.trace { "evaluated expression: #{expression}" }
         expression
       end
 
+      # Transform an expression with math function if the argument is a number e.g.: cos(3) is translated to Math.cos(3)
       def self.resolve(expression)
         replaces = Hash(String, Float64).new
 
         {% for mfunc in funcs %}
-        expression.scan(FUNC_REGEX_CONST) do |md|
+        expression.scan(/\w{2,}\([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)\)/) do |md|
           if md[0].starts_with?("{{mfunc.id}}")
             num = md[0].delete("{{mfunc.id}}(").delete(")")
             replaces[md[0]] = Math.{{mfunc.id}}(num.to_f64)
@@ -71,9 +70,11 @@ module EEEval
           Log.trace { "RESOLVER 1.1: #{expression}" }
         end
         expression = resolve_expr(expression)
+        Log.trace { "RESOLVER 1.2: #{expression}" }
         expression
       end
 
+      # Transform an expression inside a math function e.g.: cos(3+1) matches in (3+1) then (3+1) is evauated to 4 and the expression is translated to Math.cos(4)
       def self.resolve_expr(expression)
         replaces = Hash(String, Float64).new
 

@@ -1,3 +1,4 @@
+require "log"
 require "./eval/*"
 
 # TODO: Write documentation for `EasyExpressionEval`
@@ -20,7 +21,16 @@ module EEEval
     end
 
     def self.evaluate_expr(expression)
+      sci_not_to_replace = Hash(String, String).new
+      expression.scan(/(?<=\d{1})e[+-]\d+/) do |md|
+        Log.trace { "sci_not: #{md[0]}" }
+        sci_not_to_replace[md[0]] = "*#{md[0].sub("e", "10^(0+")})"
+      end
+      sci_not_to_replace.each do |key, value|
+        expression = expression.sub(key, value)
+      end
       expression = expression.gsub("+-", "-").gsub("-+", "-").gsub("--", "+").gsub("++", "+")
+      Log.trace { "evaluate_expr: #{expression}" }
       unless (expression.to_f?)
         evaluate_rpn(infix_to_rpn expression).value
       else
@@ -29,9 +39,7 @@ module EEEval
     end
 
     def self.evaluate(expression)
-      puts expression
       expression = clear_expression(expression)
-      puts expression
       evaluate_expr(expression)
     end
 
