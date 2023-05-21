@@ -30,6 +30,7 @@ module EEEval
         expression = expression.sub(key, value)
       end
       expression = expression.gsub("+-", "-").gsub("-+", "-").gsub("--", "+").gsub("++", "+")
+      expression = expression.gsub("*-", "*1-").gsub("*+", "*1+").gsub("/-", "/1-").gsub("/+", "/1+")
       Log.trace { "evaluate_expr: #{expression}" }
       unless (expression.to_f?)
         evaluate_rpn(infix_to_rpn expression).value

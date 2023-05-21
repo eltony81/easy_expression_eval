@@ -118,6 +118,15 @@ describe EEEval::CalcParser do
       expression.should eq(1.0000400652973929)
     end
   end
+
+  describe "#evaluate", tags: "mult_neg" do
+    it "Evaluate expression with multiply followed by negative num" do
+      expression = "(0-(0.0-2)^2)/(2*-0.1^2)"
+      expression = EEEval::CalcParser.evaluate(expression)
+      expression.should eq(-2.0100502512562812)
+    end
+  end
+
 end
 
 describe EEEval::MathFuncResolver do
@@ -189,6 +198,13 @@ describe EEEval::CalcFuncParser do
     it "Resolve math func gauss" do
       expression = EEEval::CalcFuncParser.evaluate("1/(4*sqrt(2*3.141592653589793)) * exp(-(1/2)*((-8-10)^2)/(4^2))")
       expression.should eq(3.9959352767263695e-6)
+    end
+  end
+
+  describe "#evaluate", tags: "gauss" do
+    it "Resolve math func gauss negative sigma" do
+      expression = EEEval::CalcFuncParser.evaluate("1/(sqrt(2*3.141592653589793)*-0.1)*exp( (-(0.0-2)^2)/(2*-0.1^2) )")
+      expression.should eq(0.055672055028643294)
     end
   end
 end
