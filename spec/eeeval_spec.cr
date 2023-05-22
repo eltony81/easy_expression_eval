@@ -123,7 +123,7 @@ describe EEEval::CalcParser do
     it "Evaluate expression with multiply followed by negative num" do
       expression = "(0-(0.0-2)^2)/(2*-0.1^2)"
       expression = EEEval::CalcParser.evaluate(expression)
-      expression.should eq(-2.0100502512562812)
+      expression.should eq(-199.99999999999997)
     end
   end
 
@@ -196,15 +196,27 @@ describe EEEval::CalcFuncParser do
 
   describe "#evaluate", tags: "gauss" do
     it "Resolve math func gauss" do
-      expression = EEEval::CalcFuncParser.evaluate("1/(4*sqrt(2*3.141592653589793)) * exp(-(1/2)*((-8-10)^2)/(4^2))")
-      expression.should eq(3.9959352767263695e-6)
+      gauss_expression = "1/(sqrt(2*pi)*s)*exp( (-(x-m)^2)/(2*s^2) )"
+      s = 0.1
+      m = 2
+      pi = Math::PI
+      x = 2
+      gauss_expression = gauss_expression.gsub(/(?<!\w)s(?!\w)/, s).gsub(/(?<!\w)m(?!\w)/, m).gsub(/(?<!\w)pi(?!\w)/, pi)
+      value = EEEval::CalcFuncParser.evaluate(gauss_expression.gsub(/(?<!\w)x(?!\w)/, x))
+      value.should eq(3.989422804014327)
     end
   end
 
-  describe "#evaluate", tags: "gauss" do
+  describe "#evaluate", tags: "gauss_s_neg" do
     it "Resolve math func gauss negative sigma" do
-      expression = EEEval::CalcFuncParser.evaluate("1/(sqrt(2*3.141592653589793)*-0.1)*exp( (-(0.0-2)^2)/(2*-0.1^2) )")
-      expression.should eq(0.055672055028643294)
+      gauss_expression = "1/(sqrt(2*pi)*s)*exp( (-(x-m)^2)/(2*s^2) )"
+      s = -0.1
+      m = 2
+      pi = Math::PI
+      x = 2
+      gauss_expression = gauss_expression.gsub(/(?<!\w)s(?!\w)/, s).gsub(/(?<!\w)m(?!\w)/, m).gsub(/(?<!\w)pi(?!\w)/, pi)
+      value = EEEval::CalcFuncParser.evaluate(gauss_expression.gsub(/(?<!\w)x(?!\w)/, x))
+      value.should eq(-3.989422804014327)
     end
   end
 end

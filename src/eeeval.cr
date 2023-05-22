@@ -20,7 +20,7 @@ module EEEval
       expression
     end
 
-    def self.evaluate_expr(expression)
+    def self.convert_scinot(expression)
       sci_not_to_replace = Hash(String, String).new
       expression.scan(/(?<=\d{1})e[+-]\d+/) do |md|
         Log.trace { "sci_not: #{md[0]}" }
@@ -29,8 +29,25 @@ module EEEval
       sci_not_to_replace.each do |key, value|
         expression = expression.sub(key, value)
       end
+      expression
+    end
+
+    def self.convert_multdiv_sign(expression)
+      multdiv_sign = Hash(String, String).new
+      expression.scan(/(?<=\*)[\-\+][\d\.]*/) do |md|
+        Log.trace { "multdiv_sign: #{md[0]}" }
+        multdiv_sign[md[0]] = "(0#{md[0]})"
+      end
+      multdiv_sign.each do |key, value|
+        expression = expression.sub(key, value)
+      end
+      expression
+    end
+
+    def self.evaluate_expr(expression)
+      expression = convert_scinot(expression)
+      expression = convert_multdiv_sign(expression)
       expression = expression.gsub("+-", "-").gsub("-+", "-").gsub("--", "+").gsub("++", "+")
-      expression = expression.gsub("*-", "*1-").gsub("*+", "*1+").gsub("/-", "/1-").gsub("/+", "/1+")
       Log.trace { "evaluate_expr: #{expression}" }
       unless (expression.to_f?)
         evaluate_rpn(infix_to_rpn expression).value
