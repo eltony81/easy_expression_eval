@@ -1,10 +1,7 @@
-# eeeval
-
-Easy Expression Eval
-
----
+# Easy Expression Eval (eeeval)
 
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/eltony81/easy_expression_eval?display_name=tag)
+---
 
 ## Installation
 
