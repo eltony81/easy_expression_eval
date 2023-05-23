@@ -43,6 +43,9 @@ module EEEval
         expression = resolve(expression)
         i=0
         until resolved?(expression)
+          if(expression.as? String)
+            expression = EEEval::CalcParser.convert_scinot(expression.as(String))
+          end
           expression = resolve(expression)
           i=i+1
           raise "Cannot evaluate #{expression}" if i > 1000

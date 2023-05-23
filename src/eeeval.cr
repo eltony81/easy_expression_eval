@@ -27,7 +27,9 @@ module EEEval
         sci_not_to_replace[md[0]] = "*#{md[0].sub("e", "10^(0+")})"
       end
       sci_not_to_replace.each do |key, value|
+        Log.trace { "replacing sci_not: #{key} --> #{value}" }
         expression = expression.sub(key, value)
+        Log.trace { "replaced sci_not: #{expression}" }
       end
       expression
     end
@@ -49,10 +51,11 @@ module EEEval
       expression = convert_multdiv_sign(expression)
       expression = expression.gsub("+-", "-").gsub("-+", "-").gsub("--", "+").gsub("++", "+")
       Log.trace { "evaluate_expr: #{expression}" }
+      value = ""
       unless (expression.to_f?)
         evaluate_rpn(infix_to_rpn expression).value
       else
-        expression
+        convert_scinot(expression)
       end
     end
 

@@ -126,7 +126,6 @@ describe EEEval::CalcParser do
       expression.should eq(-199.99999999999997)
     end
   end
-
 end
 
 describe EEEval::MathFuncResolver do
@@ -217,6 +216,26 @@ describe EEEval::CalcFuncParser do
       gauss_expression = gauss_expression.gsub(/(?<!\w)s(?!\w)/, s).gsub(/(?<!\w)m(?!\w)/, m).gsub(/(?<!\w)pi(?!\w)/, pi)
       value = EEEval::CalcFuncParser.evaluate(gauss_expression.gsub(/(?<!\w)x(?!\w)/, x))
       value.should eq(-3.989422804014327)
+    end
+  end
+
+  describe "#evaluate", tags: "gauss_full" do
+    it "Calculate range values of gauss expression" do
+      gauss_expression = "1/(sqrt(2*pi)*s)*exp( -((x-m)^2)/(2*s^2) )"
+
+      s = 0.50
+      m = 2
+      pi = Math::PI
+
+      gauss_x = gauss_expression.gsub(/(?<!\w)s(?!\w)/, s).gsub(/(?<!\w)m(?!\w)/, m).gsub(/(?<!\w)pi(?!\w)/, pi)
+
+      xdata = [] of Float64
+      ydata = [] of Float64
+
+      (-1..3).step(0.01) do |x|
+        xdata << x
+        ydata << EEEval::CalcFuncParser.evaluate(gauss_x.gsub(/(?<!\w)x(?!\w)/, x)).to_f
+      end
     end
   end
 end
