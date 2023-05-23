@@ -26,7 +26,7 @@ expression = "(14.2 + 14.2) * 4 / 2 * 10.5 ^ (2 / 0.5) + sin(2^1+cos(2+7.9-6))"
 result = EEEval::CalcFuncParser.evaluate(expression)
 puts result
 ```
-Note: the current implementation does support only sin, cos, log, exp function
+Note: the current implementation does support log exp sin cos sqrt tan atan asin acos exp2 log10 log2 functions
 
 
 
