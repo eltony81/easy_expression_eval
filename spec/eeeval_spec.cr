@@ -193,6 +193,15 @@ describe EEEval::CalcFuncParser do
     end
   end
 
+  describe "#evaluate", tags: "multdiv_sign" do
+    it "Resolve math func expr multdivsign" do
+      expression = EEEval::CalcFuncParser.evaluate("(2*-0.3^2) ")
+      expression.should eq(0.18)
+      expression = EEEval::CalcFuncParser.evaluate("(2/-0.3^2) ")
+      expression.should eq(22.22222222222222)
+    end
+  end
+
   describe "#evaluate", tags: "gauss" do
     it "Resolve math func gauss" do
       gauss_expression = "1/(sqrt(2*pi)*s)*exp( (-(x-m)^2)/(2*s^2) )"

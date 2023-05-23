@@ -37,8 +37,12 @@ module EEEval
     def self.convert_multdiv_sign(expression)
       multdiv_sign = Hash(String, String).new
       expression.scan(/(?<=\*)[\-\+][\d\.]*/) do |md|
-        Log.trace { "multdiv_sign: #{md[0]}" }
-        multdiv_sign[md[0]] = "(0#{md[0]})"
+        Log.trace { "multdiv_sign *: #{md[0]}" }
+        multdiv_sign["*#{md[0]}"] = "*(0#{md[0]})"
+      end
+      expression.scan(/(?<=\/)[\-\+][\d\.]*/) do |md|
+        Log.trace { "multdiv_sign /: #{md[0]}" }
+        multdiv_sign["/#{md[0]}"] = "/(0#{md[0]})"
       end
       multdiv_sign.each do |key, value|
         expression = expression.sub(key, value)
