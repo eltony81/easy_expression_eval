@@ -1,6 +1,7 @@
 # Easy Expression Eval (eeeval)
 
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/eltony81/easy_expression_eval?display_name=tag)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/eltony81/easy_expression_eval/crystal.yml)
 
 ---
 
