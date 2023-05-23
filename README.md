@@ -2,6 +2,8 @@
 
 Easy Expression Eval
 
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/eltony81/easy_expression_eval?display_name=tag)
+
 ## Installation
 
 1. Add the dependency to your `shard.yml`:
@@ -40,4 +42,3 @@ Note: the current implementation does support only sin, cos, log, exp function
 
 - [eltony81](https://github.com/eltony81) - creator and maintainer
 
-![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/eltony81/easy_expression_eval?display_name=tag)
