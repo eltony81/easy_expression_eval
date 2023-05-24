@@ -195,8 +195,8 @@ describe EEEval::CalcFuncParser do
 
   describe "#evaluate", tags: "multdiv_sign" do
     it "Resolve math func expr multdivsign" do
-      expression = EEEval::CalcFuncParser.evaluate("(2*-0.3^2) ")
-      expression.should eq(0.18)
+      expression = EEEval::CalcFuncParser.evaluate("(2*-0.3^2)+(2*-0.39999^2) ")
+      expression.should eq(0.4999840002)
       expression = EEEval::CalcFuncParser.evaluate("(2/-0.3^2) ")
       expression.should eq(22.22222222222222)
     end
@@ -245,6 +245,17 @@ describe EEEval::CalcFuncParser do
         xdata << x
         ydata << EEEval::CalcFuncParser.evaluate(gauss_x.gsub(/(?<!\w)x(?!\w)/, x)).to_f
       end
+    end
+  end
+
+  describe "#evaluate", tags: "abs" do
+    it "Calculate expression with abs" do
+      expression = "1/abs(45)"
+      val1 = EEEval::CalcFuncParser.evaluate(expression).to_f
+      expression = "1/abs(-45)"
+      val2 = EEEval::CalcFuncParser.evaluate(expression).to_f
+      val1.should eq(0.022222222222222223)
+      val2.should eq(0.022222222222222223)
     end
   end
 end

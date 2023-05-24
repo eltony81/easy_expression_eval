@@ -1,5 +1,13 @@
 require "log"
 
+module Math
+  extend self
+
+  def abs(value : Float64) : Float64
+    value.abs
+  end
+end
+
 module EEEval
 
   class MathFuncResolver
@@ -27,7 +35,7 @@ module EEEval
 
     macro mfunc_evaluator
 
-      {% funcs = %w(log exp sin cos sqrt tan atan asin acos exp2 log10 log2) %}
+      {% funcs = %w(log exp sin cos sqrt tan atan asin acos exp2 log10 log2 abs) %}
 
       def self.resolved?(expression)
         {% tmp = "" %}
