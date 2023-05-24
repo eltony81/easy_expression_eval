@@ -13,7 +13,9 @@ module EEEval
   end
 
   class CalcParser
+
     def self.clear_expression(expression)
+      Log.trace {"clearing expression #{expression}"}
       expression = expression.delete(" ").gsub("+-", "-").gsub("-+", "-").gsub("--", "+").gsub("++", "+")
       expression = expression.gsub(/(?<=\()\-/, "0-").gsub(/(?<=\()\+/, "0+").gsub(/^\-/, "0-").gsub(/^\+/, "0+")
       raise Exception.new("malformed expression: check parentheeses") if(expression.count('(') != expression.count(')'))
@@ -53,7 +55,7 @@ module EEEval
     def self.evaluate_expr(expression)
       expression = convert_scinot(expression)
       expression = convert_multdiv_sign(expression)
-      expression = expression.gsub("+-", "-").gsub("-+", "-").gsub("--", "+").gsub("++", "+")
+      expression = clear_expression(expression)
       Log.trace { "evaluate_expr: #{expression}" }
       value = ""
       unless (expression.to_f?)
@@ -72,6 +74,7 @@ module EEEval
 
   class CalcFuncParser
     def self.evaluate(expression)
+      Log.trace {" INIT evaluation"}
       expression = CalcParser.clear_expression(expression)
       unless (expression.to_f?)
         MathFuncResolver.evaluate(expression)

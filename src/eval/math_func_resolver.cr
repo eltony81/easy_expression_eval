@@ -90,7 +90,7 @@ module EEEval
         replaces = Hash(String, Float64).new
 
         {% for mfunc in funcs %}
-        expression.scan(/(?<={{mfunc.id}})\([\d+\s\)\(\*\-\+\/\^\.]*/) do |md|
+        expression.scan(/(?<=\b{{mfunc.id}}\b)\([\d+\s\)\(\*\-\+\/\^\.]*/) do |md|
           expr = search_expr(md[0])
           expr.try do |expr|
             key = "{{mfunc.id}}(#{expr})"

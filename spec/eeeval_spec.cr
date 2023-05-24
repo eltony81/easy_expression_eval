@@ -258,4 +258,20 @@ describe EEEval::CalcFuncParser do
       val2.should eq(0.022222222222222223)
     end
   end
+
+  describe "#evaluate", tags: "acos" do
+    it "Calculate expression with acos" do
+      expression = "cos(2) + acos(-1)"
+      val1 = EEEval::CalcFuncParser.evaluate(expression).to_f
+      val1.should eq(2.7254458170426505)
+    end
+  end
+
+  describe "#evaluate", tags: "negative" do
+    it "Calculate expression with negative value" do
+      expression = "-0.4161468365471424+3.141592653589793"
+      val1 = EEEval::CalcFuncParser.evaluate(expression).to_f
+      val1.should eq(2.7254458170426505)
+    end
+  end
 end
