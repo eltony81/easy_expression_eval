@@ -24,9 +24,9 @@ module EEEval
 
     def self.convert_scinot(expression)
       sci_not_to_replace = Hash(String, String).new
-      expression.scan(/(?<=\d{1})e[+-]\d+/) do |md|
+      expression.scan(/(?<=\d)e[+-]\d+/) do |md|
         Log.trace { "sci_not: #{md[0]}" }
-        sci_not_to_replace[md[0]] = "*#{md[0].sub("e", "10^(0+")})"
+        sci_not_to_replace[md[0]] = "*10^(0#{md[0][1..]})"
       end
       sci_not_to_replace.each do |key, value|
         Log.trace { "replacing sci_not: #{key} --> #{value}" }
