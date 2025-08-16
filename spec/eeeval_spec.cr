@@ -126,6 +126,20 @@ describe EEEval::CalcParser do
       expression.should eq(-199.99999999999997)
     end
   end
+
+  describe "#convert_multdiv_sign" do
+    it "should correctly handle multiplication with a negative number" do
+      expression = "2*-0.5"
+      result = EEEval::CalcParser.convert_multdiv_sign(expression)
+      result.should eq("2*(0-0.5)")
+    end
+
+    it "should correctly handle division with a negative number" do
+      expression = "2/-0.5"
+      result = EEEval::CalcParser.convert_multdiv_sign(expression)
+      result.should eq("2/(0-0.5)")
+    end
+  end
 end
 
 describe EEEval::MathFuncResolver do
