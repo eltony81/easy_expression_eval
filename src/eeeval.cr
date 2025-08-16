@@ -61,7 +61,7 @@ module EEEval
       unless (expression.to_f?)
         evaluate_rpn(infix_to_rpn expression).value
       else
-        convert_scinot(expression)
+        expression
       end
     end
 

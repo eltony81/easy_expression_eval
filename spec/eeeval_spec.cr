@@ -114,8 +114,8 @@ describe EEEval::CalcParser do
   describe "#evaluate", tags: "sci_notation" do
     it "Evaluate expression with minus/plus sign" do
       expression = "1+4.006529739295107e-5"
-      expression = EEEval::CalcParser.evaluate(expression)
-      expression.should eq(1.0000400652973929)
+      result = EEEval::CalcParser.evaluate(expression)
+      result.should eq(1.0000400652973929)
     end
   end
 
