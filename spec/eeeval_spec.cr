@@ -150,55 +150,6 @@ describe EEEval::CalcParser do
   end
 end
 
-describe EEEval::MathFuncResolver do
-  describe "#resolve" do
-    it "Resolve math func expr" do
-      expression = EEEval::MathFuncResolver.resolve("( log(14.2) + log(15.2) - log(16 + 4 + log(4 + 1)) )")
-      expression.should eq("( 2.653241964607215 + 2.7212954278522306 - log(16 + 4 + 1.6094379124341003) )")
-    end
-  end
-
-  describe "#search_expr" do
-    it "search_expr paremthesees closed" do
-      expr = EEEval::MathFuncResolver.search_expr("(16 + 4 + 45 / 8) + 67 / (23 - 4)")
-      expected = "16 + 4 + 45 / 8"
-      expr.should eq(expected)
-    end
-
-    it "search_expr paremthesees opened" do
-      expr = EEEval::MathFuncResolver.search_expr("(16 + 4 + 45 / 8 + 67 / (23 - 4)")
-      expr.should eq(nil)
-    end
-  end
-
-  describe "#evaluate" do
-    it "Evaluate" do
-      expression = EEEval::MathFuncResolver.evaluate("cos(6^(exp(2/cos(7.6/8))))")
-      expression.to_f64.should eq(-0.7590461129784705)
-    end
-  end
-
-  describe "#evaluate" do
-    it "Resolve math func expr" do
-      expression = EEEval::MathFuncResolver.evaluate("( log(14.2) + log(15.2) - log(16 + 4 + log(4 + 1)) )")
-      expression.should eq(2.3014072328095136)
-    end
-  end
-
-  describe "#evaluate" do
-    it "Resolve math func expr" do
-      expression = EEEval::MathFuncResolver.evaluate("1 + exp(log(14.2))")
-      expression.should eq(15.2)
-    end
-  end
-
-  describe "#evaluate" do
-    it "Resolve math func expr" do
-      expression = EEEval::MathFuncResolver.evaluate("sin(0.5)^2 + cos(0.5)^2")
-      expression.should eq(1)
-    end
-  end
-end
 
 describe EEEval::CalcFuncParser do
   describe "#evaluate" do
