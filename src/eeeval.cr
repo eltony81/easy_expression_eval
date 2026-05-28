@@ -5,9 +5,26 @@ require "./eval/*"
 module EEEval
 
   class CondParser
+    def self.parentheses_balanced?(expression)
+      in_string = false
+      count = 0
+      expression.each_char do |chr|
+        if chr == '\''
+          in_string = !in_string
+        elsif !in_string
+          if chr == '('
+            count += 1
+          elsif chr == ')'
+            count -= 1
+            return false if count < 0
+          end
+        end
+      end
+      count == 0
+    end
+
     def self.evaluate(expression)
-      raise Exception.new("malformed expression: check parentheeses") if(expression.count('(') != expression.count(')'))
-      expression = expression.delete(" ").gsub("+-") { "-" }.gsub("-+") { "-" }.gsub("--") { "+" }.gsub("++") { "+" }
+      raise Exception.new("malformed expression: check parentheeses") unless parentheses_balanced?(expression)
       evaluate_rpn(infix_to_rpn expression).value == "true"
     end
   end
@@ -23,33 +40,13 @@ module EEEval
     end
 
     def self.convert_scinot(expression)
-      sci_not_to_replace = Hash(String, String).new
-      expression.scan(/(?<=\d{1})e[+-]\d+/) do |md|
-        Log.trace { "sci_not: #{md[0]}" }
-        sci_not_to_replace[md[0]] = "*#{md[0].sub("e", "10^(0+")})"
+      expression.gsub(/(?<=\d)e[+-]?\d+/) do |match|
+        "*#{match.sub("e", "10^(0+")})"
       end
-      sci_not_to_replace.each do |key, value|
-        Log.trace { "replacing sci_not: #{key} --> #{value}" }
-        expression = expression.sub(key, value)
-        Log.trace { "replaced sci_not: #{expression}" }
-      end
-      expression
     end
 
     def self.convert_multdiv_sign(expression)
-      multdiv_sign = Hash(String, String).new
-      expression.scan(/(?<=\*)[\-\+][\d\.]*/) do |md|
-        Log.trace { "multdiv_sign *: #{md[0]}" }
-        multdiv_sign["*#{md[0]}"] = "*(0#{md[0]})"
-      end
-      expression.scan(/(?<=\/)[\-\+][\d\.]*/) do |md|
-        Log.trace { "multdiv_sign /: #{md[0]}" }
-        multdiv_sign["/#{md[0]}"] = "/(0#{md[0]})"
-      end
-      multdiv_sign.each do |key, value|
-        expression = expression.sub(key, value)
-      end
-      expression
+      expression.gsub(/([*\/^])([\-\+][\d\.]+)/, "\\1(0\\2)")
     end
 
     def self.evaluate_expr(expression)

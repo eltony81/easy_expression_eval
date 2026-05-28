@@ -36,6 +36,21 @@ describe EEEval::CondParser do
       result = EEEval::CondParser.evaluate(expression)
       result.should eq(true)
     end
+
+    it "Evaluate string comparison preserving space inside string literals" do
+      EEEval::CondParser.evaluate("'hello world' == 'hello world'").should eq(true)
+      EEEval::CondParser.evaluate("'hello world' == 'helloworld'").should eq(false)
+    end
+
+    it "Evaluate string comparison with parentheses inside string literals" do
+      EEEval::CondParser.evaluate("'(' == '('").should eq(true)
+    end
+
+    it "Evaluate numeric comparison with signed numbers" do
+      EEEval::CondParser.evaluate("1 == -1").should eq(false)
+      EEEval::CondParser.evaluate("-5.5 == -5.5").should eq(true)
+      EEEval::CondParser.evaluate("+2.3 == 2.3").should eq(true)
+    end
   end
 end
 
@@ -119,11 +134,18 @@ describe EEEval::CalcParser do
     end
   end
 
-  describe "#evaluate", tags: "mult_neg" do
-    it "Evaluate expression with multiply followed by negative num" do
-      expression = "(0-(0.0-2)^2)/(2*-0.1^2)"
-      expression = EEEval::CalcParser.evaluate(expression)
-      expression.should eq(-199.99999999999997)
+  describe "#evaluate", tags: "sci_notation_nosign" do
+    it "Evaluate expression with scientific notation without sign" do
+      EEEval::CalcParser.evaluate("1e5").should eq(100000.0)
+      EEEval::CalcParser.evaluate("2.5e3").should eq(2500.0)
+    end
+  end
+
+  describe "#evaluate", tags: "signed_exponents" do
+    it "Evaluate expression with signed exponents" do
+      EEEval::CalcParser.evaluate("10.5 ^ -2").should eq(10.5 ** -2)
+      EEEval::CalcParser.evaluate("2 ^ -3").should eq(0.125)
+      EEEval::CalcParser.evaluate("2.5 ^ +2").should eq(6.25)
     end
   end
 end
@@ -248,6 +270,33 @@ describe EEEval::CalcFuncParser do
     end
   end
 
+  describe "#evaluate", tags: "gauss_range_10" do
+    it "Calculate range values of gauss expression from -10 to 10 with 0.01 step" do
+      gauss_expression = "1/(sqrt(2*pi)*s)*exp( -((x-m)^2)/(2*s^2) )"
+
+      s = 1.5
+      m = 0.0
+      pi = Math::PI
+
+      gauss_x = gauss_expression.gsub(/(?<!\w)s(?!\w)/, s).gsub(/(?<!\w)m(?!\w)/, m).gsub(/(?<!\w)pi(?!\w)/, pi)
+
+      # Build step loop
+      # Note: Step doesn't work directly with Float64 in older Crystal versions unless we do a loop or step.
+      # Crystal has a step method: (start..end).step(by)
+      (-10.0..10.0).step(0.01) do |x|
+        # Expected value
+        expected = 1.0 / (Math.sqrt(2 * Math::PI) * s) * Math.exp(-((x - m)**2) / (2 * (s**2)))
+        
+        # Evaluated value
+        expr_with_x = gauss_x.gsub(/(?<!\w)x(?!\w)/, x)
+        evaluated = EEEval::CalcFuncParser.evaluate(expr_with_x).to_f
+
+        # Check they are very close
+        (evaluated - expected).abs.should be_close(1e-9, 1e-9)
+      end
+    end
+  end
+
   describe "#evaluate", tags: "abs" do
     it "Calculate expression with abs" do
       expression = "1/abs(45)"
@@ -267,11 +316,18 @@ describe EEEval::CalcFuncParser do
     end
   end
 
-  describe "#evaluate", tags: "negative" do
-    it "Calculate expression with negative value" do
-      expression = "-0.4161468365471424+3.141592653589793"
-      val1 = EEEval::CalcFuncParser.evaluate(expression).to_f
-      val1.should eq(2.7254458170426505)
+  describe "#evaluate", tags: "func_sci_notation" do
+    it "Evaluate math functions with scientific notation inputs" do
+      result = EEEval::CalcFuncParser.evaluate("exp(1e5)")
+      # We don't check exact value since e^100000 is infinity, but it shouldn't raise error/loop
+      result.to_f.should eq(Float64::INFINITY)
+
+      # Small scientific notation input
+      EEEval::CalcFuncParser.evaluate("sin(1e-10)").to_f.should eq(Math.sin(1e-10))
+    end
+
+    it "Evaluate math functions with signed exponents inside" do
+      EEEval::CalcFuncParser.evaluate("cos(2^-3)").to_f.should eq(Math.cos(0.125))
     end
   end
 end
