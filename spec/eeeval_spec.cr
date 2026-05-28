@@ -281,4 +281,36 @@ describe EEEval::CalcFuncParser do
       EEEval::CalcFuncParser.evaluate("cos(2^-3)").to_f.should eq(Math.cos(0.125))
     end
   end
+
+  describe "#evaluate", tags: "fourier" do
+    it "Evaluate Fourier series terms and DFT calculations" do
+      # 1. Fourier Series term evaluation: 4/pi * sin(2*pi*f*t)
+      # with f = 0.05, t = 5.0, pi = Math::PI
+      # 2*pi*f*t = 2 * Math::PI * 0.05 * 5.0 = 0.5 * Math::PI
+      # sin(0.5 * Math::PI) = 1.0
+      # expected = 4 / Math::PI * 1.0 = 4 / Math::PI
+      expression = "4/pi * sin(2*pi*f*t)"
+        .gsub(/(?<!\w)pi(?!\w)/, Math::PI.to_s)
+        .gsub(/(?<!\w)f(?!\w)/, "0.05")
+        .gsub(/(?<!\w)t(?!\w)/, "5.0")
+      val = EEEval::CalcFuncParser.evaluate(expression).to_f
+      val.should be_close(4.0 / Math::PI, 1e-9)
+
+      # 2. DFT magnitude term evaluation: sqrt(real^2 + imag^2) / total
+      # with real = 1.2, imag = -3.4, total = 200
+      # expected = sqrt(1.2^2 + (-3.4)^2) / 200 = sqrt(1.44 + 11.56) / 200 = sqrt(13) / 200
+      expression2 = "sqrt(real^2 + imag^2) / total"
+        .gsub(/(?<!\w)real(?!\w)/, "1.2")
+        .gsub(/(?<!\w)imag(?!\w)/, "-3.4")
+        .gsub(/(?<!\w)total(?!\w)/, "200")
+      val2 = EEEval::CalcFuncParser.evaluate(expression2).to_f
+      val2.should be_close(Math.sqrt(1.2**2 + (-3.4)**2) / 200.0, 1e-9)
+
+      # 3. Verify cos and sin combinations at different angles
+      [0.0, 0.5, 1.0, -1.0, Math::PI, Math::PI / 2.0].each do |angle|
+        EEEval::CalcFuncParser.evaluate("sin(#{angle})").to_f.should be_close(Math.sin(angle), 1e-9)
+        EEEval::CalcFuncParser.evaluate("cos(#{angle})").to_f.should be_close(Math.cos(angle), 1e-9)
+      end
+    end
+  end
 end
