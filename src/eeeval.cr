@@ -33,33 +33,15 @@ module EEEval
 
     def self.clear_expression(expression)
       Log.trace {"clearing expression #{expression}"}
-      expression = expression.delete(" ").gsub("+-", "-").gsub("-+", "-").gsub("--", "+").gsub("++", "+")
-      expression = expression.gsub(/(?<=\()\-/, "0-").gsub(/(?<=\()\+/, "0+").gsub(/^\-/, "0-").gsub(/^\+/, "0+")
-      raise Exception.new("malformed expression: check parentheeses") if(expression.count('(') != expression.count(')'))
-      expression
-    end
-
-    def self.convert_scinot(expression)
-      expression.gsub(/(?<=\d)e[+-]?\d+/) do |match|
-        "*#{match.sub("e", "10^(0+")})"
-      end
-    end
-
-    def self.convert_multdiv_sign(expression)
-      expression.gsub(/([*\/^])([\-\+][\d\.]+)/, "\\1(0\\2)")
+      cleaned = expression.delete(" ")
+      raise Exception.new("malformed expression: check parentheeses") if cleaned.count('(') != cleaned.count(')')
+      cleaned
     end
 
     def self.evaluate_expr(expression)
-      expression = convert_scinot(expression)
-      expression = convert_multdiv_sign(expression)
-      expression = clear_expression(expression)
       Log.trace { "evaluate_expr: #{expression}" }
-      value = ""
-      unless (expression.to_f?)
-        evaluate_rpn(infix_to_rpn expression).value
-      else
-        convert_scinot(expression)
-      end
+      val = evaluate_rpn(infix_to_rpn expression).value
+      val.is_a?(String) ? val.to_f64 : val
     end
 
     def self.evaluate(expression)
@@ -72,12 +54,7 @@ module EEEval
   class CalcFuncParser
     def self.evaluate(expression)
       Log.trace {" INIT evaluation"}
-      expression = CalcParser.clear_expression(expression)
-      unless (expression.to_f?)
-        MathFuncResolver.evaluate(expression)
-      else
-        expression
-      end
+      CalcParser.evaluate(expression)
     end
   end
 end
