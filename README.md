@@ -75,9 +75,9 @@ EEEval::CondParser.evaluate("1 == 0 || 1 == 1")     # => true
 
 ### Built-in Support
 
-- **Constants**: `pi`, `e`, `tau`, `sqrt2`, `phi`.
-- **Functions**: `sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `log`, `log2`, `log10`, `exp`, `exp2`, `sqrt`, `abs`.
-- **Operators**: `+`, `-`, `*`, `/`, `^` (power).
+- **Constants**: `pi`, `e`, `tau`, `sqrt2`, `phi`, `rad2deg`, `deg2rad`, `g`, `inf`, `nan`.
+- **Functions**: `sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `sinh`, `cosh`, `tanh`, `log`, `log2`, `log10`, `exp`, `exp2`, `sqrt`, `abs`, `floor`, `ceil`, `round`, `sgn`, `gamma`.
+- **Operators**: `+`, `-`, `*`, `/`, `^` (power), `%` (modulo).
 
 ---
 
