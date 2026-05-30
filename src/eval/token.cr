@@ -12,6 +12,7 @@ module EEEval
       String
       Number
       Boolean
+      Variable
       Undefined
     end
   end
