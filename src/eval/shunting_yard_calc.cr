@@ -11,13 +11,17 @@ module EEEval
     # Token::Type::Variable tokens so they can become VariableNode in the AST.
     def self.tokenize(expression : String) : Array(Token)
       tokens = [] of Token
-      chars = expression.delete(" ").chars
-      expr_length = chars.size
+      expr_length = expression.size
       i = 0
       expect_operand = true
 
       while i < expr_length
-        chr = chars[i]
+        chr = expression[i]
+
+        if chr.whitespace?
+          i += 1
+          next
+        end
 
         if chr == '+' || chr == '-'
           operator = chr.to_s
@@ -46,30 +50,30 @@ module EEEval
 
         elsif chr.number?
           start_idx = i
-          while i + 1 < expr_length && (chars[i + 1].number? || chars[i + 1] == '.')
+          while i + 1 < expr_length && (expression[i + 1].number? || expression[i + 1] == '.')
             i += 1
           end
           # Scientific notation (e.g. 1.5e-3)
-          if i + 1 < expr_length && (chars[i + 1] == 'e' || chars[i + 1] == 'E')
+          if i + 1 < expr_length && (expression[i + 1] == 'e' || expression[i + 1] == 'E')
             j = i + 1
-            j += 1 if j + 1 < expr_length && (chars[j + 1] == '+' || chars[j + 1] == '-')
-            if j + 1 < expr_length && chars[j + 1].number?
+            j += 1 if j + 1 < expr_length && (expression[j + 1] == '+' || expression[j + 1] == '-')
+            if j + 1 < expr_length && expression[j + 1].number?
               i = j + 1
-              while i + 1 < expr_length && chars[i + 1].number?
+              while i + 1 < expr_length && expression[i + 1].number?
                 i += 1
               end
             end
           end
-          tokens << Token.new(chars[start_idx..i].join, Token::Type::Number)
+          tokens << Token.new(expression[start_idx..i], Token::Type::Number)
           expect_operand = false
           i += 1
 
         elsif chr.ascii_letter? || chr == '_'
           start_idx = i
-          while i + 1 < expr_length && (chars[i + 1].ascii_letter? || chars[i + 1].number? || chars[i + 1] == '_')
+          while i + 1 < expr_length && (expression[i + 1].ascii_letter? || expression[i + 1].number? || expression[i + 1] == '_')
             i += 1
           end
-          word = chars[start_idx..i].join
+          word = expression[start_idx..i]
           if FUNC_NAMES.includes?(word)
             tokens << Token.new(word, Token::Type::Operator)  # function treated as operator
           else
@@ -97,14 +101,29 @@ module EEEval
       push_op = ->(op : String) do
         if FUNC_NAMES.includes?(op)
           arg = output.pop
-          output << AST::FunctionNode.new(op, arg)
+          if arg.is_a?(AST::NumberNode)
+            # Constant folding for functions
+            output << AST::NumberNode.new(AST::FunctionNode.new(op, arg).evaluate(Constants::DEFAULT_ENV))
+          else
+            output << AST::FunctionNode.new(op, arg)
+          end
         elsif op == "u-" || op == "u+"
           operand = output.pop
-          output << AST::UnaryOpNode.new(op, operand)
+          if operand.is_a?(AST::NumberNode)
+            # Constant folding for unary operators
+            output << AST::NumberNode.new(AST::UnaryOpNode.new(op, operand).evaluate(Constants::DEFAULT_ENV))
+          else
+            output << AST::UnaryOpNode.new(op, operand)
+          end
         else
           right = output.pop
           left  = output.pop
-          output << AST::BinaryOpNode.new(op, left, right)
+          if left.is_a?(AST::NumberNode) && right.is_a?(AST::NumberNode)
+            # Constant folding for binary operators
+            output << AST::NumberNode.new(AST::BinaryOpNode.new(op, left, right).evaluate(Constants::DEFAULT_ENV))
+          else
+            output << AST::BinaryOpNode.new(op, left, right)
+          end
         end
       end
 
