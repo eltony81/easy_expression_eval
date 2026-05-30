@@ -42,6 +42,7 @@ module EEEval
         when "*" then l * r
         when "/" then l / r
         when "^" then l ** r
+        when "%" then l % r
         else raise "Unknown operator: '#{@op}'"
         end
       end
@@ -83,6 +84,14 @@ module EEEval
         when "log10" then Math.log10(arg)
         when "log2"  then Math.log2(arg)
         when "abs"   then arg.abs
+        when "floor" then arg.floor
+        when "ceil"  then arg.ceil
+        when "round" then arg.round
+        when "sgn"   then arg.sign.to_f
+        when "sinh"  then Math.sinh(arg)
+        when "cosh"  then Math.cosh(arg)
+        when "tanh"  then Math.tanh(arg)
+        when "gamma" then Math.gamma(arg)
         else raise "Unknown function: '#{@func}'"
         end
       end

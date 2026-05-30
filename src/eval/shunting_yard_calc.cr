@@ -1,6 +1,6 @@
 module EEEval
   class CalcParser
-    FUNC_NAMES = %w(log exp sin cos sqrt tan atan asin acos exp2 log10 log2 abs)
+    FUNC_NAMES = %w(log exp sin cos sqrt tan atan asin acos exp2 log10 log2 abs floor ceil round sgn sinh cosh tanh gamma)
 
     # -------------------------------------------------------------------------
     # Token types (extended to support Variable)
@@ -33,7 +33,7 @@ module EEEval
           expect_operand = true
           i += 1
 
-        elsif chr == '*' || chr == '/' || chr == '^'
+        elsif chr == '*' || chr == '/' || chr == '^' || chr == '%'
           tokens << Token.new(chr.to_s, Token::Type::Operator)
           expect_operand = true
           i += 1
@@ -207,14 +207,14 @@ module EEEval
       case operator
       when "u-", "u+" then 4
       when "^"        then 3
-      when "*", "/"   then 2
+      when "*", "/", "%" then 2
       when "+", "-"   then 1
       else -1
       end
     end
 
     def self.has_left_associativity(operator : String) : Bool
-      operator == "+" || operator == "-" || operator == "/" || operator == "*"
+      operator == "+" || operator == "-" || operator == "/" || operator == "*" || operator == "%"
     end
 
     def self.should_pop?(op1 : String, op2 : String) : Bool

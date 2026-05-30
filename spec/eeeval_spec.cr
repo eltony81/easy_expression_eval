@@ -234,4 +234,32 @@ describe EEEval::CalcFuncParser do
       val2.should be_close(Math.sqrt(1.2**2 + (-3.4)**2) / 200.0, 1e-9)
     end
   end
+
+  describe "#evaluate", tags: "new_features" do
+    it "Evaluate modulo operator" do
+      EEEval::CalcParser.evaluate("10 % 3").should eq(1.0)
+      EEEval::CalcParser.evaluate("10.5 % 3").should eq(1.5)
+    end
+
+    it "Evaluate new constants" do
+      EEEval::CalcParser.evaluate("rad2deg").should be_close(180.0 / Math::PI, 1e-10)
+      EEEval::CalcParser.evaluate("deg2rad").should be_close(Math::PI / 180.0, 1e-10)
+      EEEval::CalcParser.evaluate("g").should eq(9.80665)
+      EEEval::CalcParser.evaluate("inf").should eq(Float64::INFINITY)
+      EEEval::CalcParser.evaluate("nan").nan?.should be_true
+    end
+
+    it "Evaluate new functions" do
+      EEEval::CalcFuncParser.evaluate("floor(3.9)").should eq(3.0)
+      EEEval::CalcFuncParser.evaluate("ceil(3.1)").should eq(4.0)
+      EEEval::CalcFuncParser.evaluate("round(3.5)").should eq(4.0)
+      EEEval::CalcFuncParser.evaluate("sgn(-5.5)").should eq(-1.0)
+      EEEval::CalcFuncParser.evaluate("sgn(0)").should eq(0.0)
+      EEEval::CalcFuncParser.evaluate("sgn(2.3)").should eq(1.0)
+      EEEval::CalcFuncParser.evaluate("sinh(1)").should be_close(Math.sinh(1), 1e-10)
+      EEEval::CalcFuncParser.evaluate("cosh(1)").should be_close(Math.cosh(1), 1e-10)
+      EEEval::CalcFuncParser.evaluate("tanh(1)").should be_close(Math.tanh(1), 1e-10)
+      EEEval::CalcFuncParser.evaluate("gamma(5)").should eq(24.0) # (5-1)!
+    end
+  end
 end
