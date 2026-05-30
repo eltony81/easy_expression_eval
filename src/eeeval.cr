@@ -1,4 +1,5 @@
 require "log"
+require "./constants"
 require "./eval/*"
 
 # EEEval — Easy Expression Evaluator
