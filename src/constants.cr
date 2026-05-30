@@ -1,10 +1,20 @@
 module EEEval
   module Constants
-    # Primary mathematical constants
-    E     = Math::E                     # Euler's number ≈ 2.71828
-    PI    = Math::PI                    # π ≈ 3.14159
-    TAU   = Math::TAU                   # τ = 2π ≈ 6.28318
-    SQRT2 = Math.sqrt(2)                # √2 ≈ 1.41421
-    PHI   = (1 + Math.sqrt(5)) / 2      # Golden ratio ≈ 1.61803
+    # Default environment: named mathematical constants available in every
+    # expression without explicit declaration.
+    DEFAULT_ENV = {
+      "pi"    => Math::PI,
+      "e"     => Math::E,
+      "tau"   => Math::TAU,
+      "sqrt2" => Math.sqrt(2.0),
+      "phi"   => (1.0 + Math.sqrt(5.0)) / 2.0,
+    } of String => Float64
+
+    # Crystal-level constants kept for direct use in Crystal code
+    PI    = Math::PI
+    E     = Math::E
+    TAU   = Math::TAU
+    SQRT2 = Math.sqrt(2.0)
+    PHI   = (1.0 + Math.sqrt(5.0)) / 2.0
   end
 end
