@@ -85,11 +85,22 @@ EEEval::CondParser.evaluate("1 == 0 || 1 == 1")     # => true
 
 The library includes a CLI tool for quick evaluations and range calculations.
 
-```bash
-# Single expression
-crystal run src/cli.cr -- "sin(pi/2) + e"
+### Parameters:
+- `-v, --var VAR`: Specify the variable name to use in the expression (e.g., `x`, `t`).
+- `-s, --start VAL`: Set the starting value for the range evaluation.
+- `-e, --end VAL`: Set the ending value for the range evaluation.
+- `-d, --step VAL`: Set the increment step size (defaults to `1.0`).
 
-# Range evaluation with variables
+### Examples:
+
+**Single expression evaluation:**
+```bash
+crystal run src/cli.cr -- "sin(pi/2) + e"
+```
+
+**Range evaluation (vector calculation):**
+This will evaluate the expression for `x` from `0` to `10` with a step of `0.5`, producing a vector of results.
+```bash
 crystal run src/cli.cr -- -v x -s 0 -e 10 -d 0.5 "x^2 + sin(x)"
 ```
 
