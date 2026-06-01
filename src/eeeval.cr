@@ -1,4 +1,5 @@
 require "log"
+require "num"
 require "./constants"
 require "./eval/*"
 
@@ -71,6 +72,18 @@ module EEEval
     # -----------------------------------------------------------------------
     def self.evaluate(ast : AST::Node, vars : Hash(String, Float64)) : Float64
       env = Constants::DEFAULT_ENV.merge(vars)
+      ast.evaluate(env)
+    end
+
+    # -----------------------------------------------------------------------
+    # evaluate(ast, vars) — evaluates a pre-compiled AST with a Tensor environment.
+    # -----------------------------------------------------------------------
+    def self.evaluate(ast : AST::Node, vars : Hash(String, Tensor(Float64, CPU(Float64)))) : Tensor(Float64, CPU(Float64))
+      tensor_env = Hash(String, Tensor(Float64, CPU(Float64))).new
+      Constants::DEFAULT_ENV.each do |k, v|
+        tensor_env[k] = Tensor(Float64, CPU(Float64)).new([1]) { v }
+      end
+      env = tensor_env.merge(vars)
       ast.evaluate(env)
     end
 

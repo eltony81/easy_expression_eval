@@ -43,19 +43,20 @@ begin
   if var_name && range_start && range_end
     raise "Step must be > 0" if range_step <= 0.0
 
-    # Compile the AST once — reuse it for every point in the range
+    # Compile the AST once
     ast     = EEEval::CalcFuncParser.compile(expr)
-    results = [] of Float64
     current = range_start.not_nil!
     limit   = range_end.not_nil!
 
-    while current <= limit + 1e-9
-      results << EEEval::CalcFuncParser.evaluate(ast, {var_name.not_nil! => current})
-      current += range_step
-    end
+    # Compute step count and build target coordinate Tensor
+    steps = ((limit - current) / range_step).to_i + 1
+    x_tensor = Tensor(Float64, CPU(Float64)).new([steps]) { |i| current + i * range_step }
 
-    puts "Vector (#{results.size} values):"
-    results.each_with_index { |v, i| puts "  [#{i}] #{v}" }
+    # Evaluate the AST over the entire vector in a single step
+    results_tensor = EEEval::CalcFuncParser.evaluate(ast, {var_name.not_nil! => x_tensor})
+
+    puts "Vector (#{results_tensor.size} values):"
+    results_tensor.each_with_index { |v, i| puts "  [#{i}] #{v}" }
 
   else
     # Single evaluation — no variables needed

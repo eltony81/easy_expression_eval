@@ -1,5 +1,5 @@
 name: eeeval
-version: 0.4.3
+version: 1.0.0
 
 authors:
   - eltony81 <antonio.difluri@gmail.com>
@@ -7,3 +7,8 @@ authors:
 crystal: ">= 1.10.0, < 2.0.0"
 
 license: MIT
+
+dependencies:
+  num:
+    github: eltony81/num.cr
+    version: ~> 1.7.6

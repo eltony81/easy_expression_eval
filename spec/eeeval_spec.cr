@@ -262,4 +262,18 @@ describe EEEval::CalcFuncParser do
       EEEval::CalcFuncParser.evaluate("gamma(5)").should eq(24.0) # (5-1)!
     end
   end
+
+  describe "#evaluate with Tensor" do
+    it "Evaluate pre-compiled expression with Tensor environment" do
+      ast = EEEval::CalcFuncParser.compile("x^2 + sin(x)")
+      x_tensor = Tensor(Float64, CPU(Float64)).new([3]) { |i| i.to_f }
+      
+      result = EEEval::CalcFuncParser.evaluate(ast, {"x" => x_tensor})
+      
+      result.shape.should eq([3])
+      result[0].value.should be_close(0.0, 1e-9)
+      result[1].value.should be_close(1.0 + Math.sin(1.0), 1e-9)
+      result[2].value.should be_close(4.0 + Math.sin(2.0), 1e-9)
+    end
+  end
 end
