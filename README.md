@@ -23,21 +23,23 @@
 
 ### Mathematical Evaluation
 
-You can evaluate complex mathematical expressions with a single call:
+You can evaluate complex mathematical expressions containing numbers, functions, and operators:
 
 ```crystal
 require "eeeval"
 
 # Simple evaluation
-result = EEEval::CalcFuncParser.evaluate("(14.2 + 14.2) * 4 / 2 * 10.5 ^ (2 / 0.5)")
-puts result
+result = EEEval::CalcFuncParser.evaluate("sin(pi/2) + e")
+puts result # => 3.718281828459045
 ```
 
-#### Variables Support
+#### Variables Support (Native & Efficient)
 
-Pass a hash of variables to the evaluator:
+Pass a hash of variables to the evaluator. No string replacement is performed; variables are resolved during AST evaluation:
 
 ```crystal
+require "eeeval"
+
 vars = {"x" => 3.0, "y" => 1.5}
 result = EEEval::CalcFuncParser.evaluate("x^2 + sin(y)", vars)
 puts result
@@ -45,13 +47,17 @@ puts result
 
 #### Pre-compilation (AST)
 
-For performance-critical code (e.g., inside loops), compile the expression into an AST once and reuse it:
+For performance-critical code (such as evaluations inside loops), compile the expression once into an AST, then evaluate it repeatedly with different variables:
 
 ```crystal
+require "eeeval"
+
+# Compile the expression once
 ast = EEEval::CalcFuncParser.compile("sin(x) * phi")
 
+# Evaluate multiple times without re-parsing
 (0..100).each do |i|
-  res = EEEval::CalcFuncParser.evaluate(ast, {"x" => i.to_f})
+  res = EEEval::CalcFuncParser.evaluate(ast, {"x" => i.to_f64})
   puts "f(#{i}) = #{res}"
 end
 ```
@@ -61,6 +67,8 @@ end
 The library includes a `CondParser` for boolean logic:
 
 ```crystal
+require "eeeval"
+
 # Numeric comparisons
 EEEval::CondParser.evaluate("10 == 10")    # => true
 EEEval::CondParser.evaluate("5 != 3")      # => true
@@ -75,9 +83,9 @@ EEEval::CondParser.evaluate("1 == 0 || 1 == 1")     # => true
 
 ### Built-in Support
 
-- **Constants**: `pi`, `e`, `tau`, `sqrt2`, `phi`, `rad2deg`, `deg2rad`, `g`, `inf`, `nan`.
-- **Functions**: `sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `sinh`, `cosh`, `tanh`, `log`, `log2`, `log10`, `exp`, `exp2`, `sqrt`, `abs`, `floor`, `ceil`, `round`, `sgn`, `gamma`.
-- **Operators**: `+`, `-`, `*`, `/`, `^` (power), `%` (modulo).
+- **Constants**: `pi`, `e`, `tau`, `sqrt2`, `phi` (available inside environments by default).
+- **Functions**: `sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `log`, `log2`, `log10`, `exp`, `exp2`, `sqrt`, `abs`.
+- **Operators**: `+`, `-`, `*`, `/`, `^` (power).
 
 ---
 
