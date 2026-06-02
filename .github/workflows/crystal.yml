@@ -14,8 +14,11 @@ jobs:
     container:
       image: crystallang/crystal
 
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install dependencies
       run: shards install
     - name: Run tests
