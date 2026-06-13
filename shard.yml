@@ -1,5 +1,8 @@
 name: eeeval
 version: 1.0.0
+description: A lightweight, efficient mathematical and conditional expression evaluator and parser for Crystal.
+homepage: https://github.com/eltony81/easy_expression_eval
+repository: https://github.com/eltony81/easy_expression_eval
 
 authors:
   - eltony81 <antonio.difluri@gmail.com>
