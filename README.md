@@ -91,25 +91,45 @@ EEEval::CondParser.evaluate("1 == 0 || 1 == 1")     # => true
 
 ## CLI Usage
 
-The library includes a CLI tool for quick evaluations and range calculations.
+The library includes a powerful CLI tool (`eeval`) for quick evaluations, range calculations, and interactive sessions.
+
+### Installation
+Build the executable using shards:
+```bash
+shards build eeval
+```
+The binary will be available at `./bin/eeval`.
 
 ### Parameters:
-- `-v, --var VAR`: Specify the variable name to use in the expression (e.g., `x`, `t`).
+- `-v, --var VAR`: Specify the variable name to use in the range evaluation (e.g., `x`, `t`).
 - `-s, --start VAL`: Set the starting value for the range evaluation.
 - `-e, --end VAL`: Set the ending value for the range evaluation.
 - `-d, --step VAL`: Set the increment step size (defaults to `1.0`).
+- `-D, --define VAR=VAL`: Define a fixed variable (e.g., `-D offset=10`).
+- `-c, --cond`: Use the conditional evaluator for boolean logic.
+- `-i, --interactive`: Start an interactive REPL session.
 
 ### Examples:
 
 **Single expression evaluation:**
 ```bash
-crystal run src/cli.cr -- "sin(pi/2) + e"
+./bin/eeval "sin(pi/2) + e"
 ```
 
 **Range evaluation (vector calculation):**
-This will evaluate the expression for `x` from `0` to `10` with a step of `0.5`, producing a vector of results.
+Evaluate `x^2 + sin(x)` for `x` from `0` to `10` with a step of `0.5`.
 ```bash
-crystal run src/cli.cr -- -v x -s 0 -e 10 -d 0.5 "x^2 + sin(x)"
+./bin/eeval -v x -s 0 -e 10 -d 0.5 "x^2 + sin(x)"
+```
+
+**Using custom variables:**
+```bash
+./bin/eeval -D a=5 -D b=2 "a^b + 10"
+```
+
+**Interactive REPL:**
+```bash
+./bin/eeval -i
 ```
 
 ---
