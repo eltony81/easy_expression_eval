@@ -1,7 +1,7 @@
 # Easy Expression Eval (eeeval)
 
-![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/eltony81/easy_expression_eval?display_name=tag)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/eltony81/easy_expression_eval/crystal.yml)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/eltony81/easy_expression_eval?display_name=tag&cacheSeconds=300)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/eltony81/easy_expression_eval/crystal.yml?cacheSeconds=300)
 
 **eeeval** is a lightweight and efficient expression evaluator for Crystal. It supports mathematical calculations, user-defined variables, pre-compiled ASTs for performance, and conditional expressions.
 
