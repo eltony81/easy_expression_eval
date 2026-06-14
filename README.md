@@ -87,6 +87,15 @@ EEEval::CondParser.evaluate("1 == 0 || 1 == 1")     # => true
 - **Functions**: `sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `log`, `log2`, `log10`, `exp`, `exp2`, `sqrt`, `abs`, `floor`, `ceil`, `round`, `sgn`, `sinh`, `cosh`, `tanh`, `gamma`.
 - **Operators**: `+`, `-`, `*`, `/`, `%` (modulo), `^` (power).
 
+## Performance
+
+`eeeval` is designed for high-performance mathematical evaluation, especially in scenarios requiring repetitive calculations. Beyond using a pre-compiled **AST**, it employs several key strategies:
+
+- **Vectorization (Tensor Integration)**: Built on top of `num.cr`, the evaluator can process entire Tensors in a single pass. When evaluating ranges, operations are performed on data blocks using SIMD-like patterns, drastically reducing overhead compared to standard loops.
+- **Constant Folding**: During AST compilation, sub-expressions containing only constants (e.g., `sin(pi/2) * 10`) are pre-calculated and replaced with a single numeric node, eliminating redundant math at runtime.
+- **Native Symbol Resolution**: Variables and constants are resolved directly via an environment hash. No string replacement or regex manipulation is performed during evaluation.
+- **Single-Pass Parsing**: Uses an optimized Shunting-Yard algorithm to build the AST in a single tokenization pass, ensuring minimal memory allocation and fast startup.
+
 ---
 
 ## Examples
