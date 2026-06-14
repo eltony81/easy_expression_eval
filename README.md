@@ -83,9 +83,24 @@ EEEval::CondParser.evaluate("1 == 0 || 1 == 1")     # => true
 
 ### Built-in Support
 
-- **Constants**: `pi`, `e`, `tau`, `sqrt2`, `phi` (available inside environments by default).
-- **Functions**: `sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `log`, `log2`, `log10`, `exp`, `exp2`, `sqrt`, `abs`.
-- **Operators**: `+`, `-`, `*`, `/`, `^` (power).
+- **Constants**: `pi`, `e`, `tau`, `sqrt2`, `phi`, `rad2deg`, `deg2rad`, `g`, `inf`, `nan`.
+- **Functions**: `sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `log`, `log2`, `log10`, `exp`, `exp2`, `sqrt`, `abs`, `floor`, `ceil`, `round`, `sgn`, `sinh`, `cosh`, `tanh`, `gamma`.
+- **Operators**: `+`, `-`, `*`, `/`, `%` (modulo), `^` (power).
+
+---
+
+## Examples
+
+The repository includes standalone scripts in the `examples/` directory to demonstrate advanced usage:
+
+- **Gaussian Distribution**: Calculation of PDF and ASCII visualization.
+- **Mandelbrot Set**: ASCII rendering of the famous fractal.
+- **Monte Carlo Pi**: Estimation of π using random sampling.
+
+Run them with:
+```bash
+crystal examples/gaussian.cr
+```
 
 ---
 
