@@ -100,6 +100,7 @@ module EEEval
 
       push_op = ->(op : String) do
         if FUNC_NAMES.includes?(op)
+          raise "Invalid expression: missing operand for function '#{op}'" if output.empty?
           arg = output.pop
           if arg.is_a?(AST::NumberNode)
             # Constant folding for functions
@@ -108,6 +109,7 @@ module EEEval
             output << AST::FunctionNode.new(op, arg)
           end
         elsif op == "u-" || op == "u+"
+          raise "Invalid expression: missing operand for unary operator '#{op}'" if output.empty?
           operand = output.pop
           if operand.is_a?(AST::NumberNode)
             # Constant folding for unary operators
@@ -116,6 +118,7 @@ module EEEval
             output << AST::UnaryOpNode.new(op, operand)
           end
         else
+          raise "Invalid expression: missing operand for operator '#{op}'" if output.size < 2
           right = output.pop
           left  = output.pop
           if left.is_a?(AST::NumberNode) && right.is_a?(AST::NumberNode)
@@ -145,6 +148,7 @@ module EEEval
             while !ops.empty? && ops.last != "("
               push_op.call(ops.pop)
             end
+            raise "Mismatched parentheses in expression" if ops.empty?
             ops.pop  # discard "("
             if !ops.empty? && FUNC_NAMES.includes?(ops.last)
               push_op.call(ops.pop)
@@ -154,8 +158,11 @@ module EEEval
             ops << val
 
           elsif val == "u-" || val == "u+"
-            # Unary — right-associative, highest precedence before functions
-            while !ops.empty? && ops.last != "(" && precedence(ops.last) > precedence(val)
+            # Unary — binds tighter than +,-,*,/,% but looser than "^" so that
+            # e.g. "-2^2" parses as "-(2^2)" (standard math convention).
+            # "^" is right-associative and, if present here, is always still
+            # waiting for its right-hand operand, so it must never be popped.
+            while !ops.empty? && ops.last != "(" && ops.last != "^" && precedence(ops.last) > precedence(val)
               push_op.call(ops.pop)
             end
             ops << val
@@ -179,6 +186,7 @@ module EEEval
       end
 
       raise "Invalid expression: empty result" if output.empty?
+      raise "Invalid expression: missing operator(s) between operands" if output.size > 1
       output.last
     end
 
@@ -205,10 +213,10 @@ module EEEval
     # -------------------------------------------------------------------------
     def self.precedence(operator : String) : Int32
       case operator
-      when "u-", "u+" then 4
-      when "^"        then 3
-      when "*", "/", "%" then 2
-      when "+", "-"   then 1
+      when "^"        then 6
+      when "u-", "u+" then 5
+      when "*", "/", "%" then 4
+      when "+", "-"   then 2
       else -1
       end
     end

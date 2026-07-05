@@ -125,13 +125,11 @@ shards build eeval
 The binary will be available at `./bin/eeval`.
 
 ### Parameters:
-- `-v, --var VAR`: Specify the variable name to use in the range evaluation (e.g., `x`, `t`).
-- `-s, --start VAL`: Set the starting value for the range evaluation.
-- `-e, --end VAL`: Set the ending value for the range evaluation.
-- `-d, --step VAL`: Set the increment step size (defaults to `1.0`).
-- `-D, --define VAR=VAL`: Define a fixed variable (e.g., `-D offset=10`).
+- `-r, --range VAR=START:END:STEP`: Range/vector evaluation over `VAR` from `START` to `END` (`STEP` defaults to `1` and may be omitted, e.g. `-r x=0:10`).
 - `-c, --cond`: Use the conditional evaluator for boolean logic.
 - `-i, --interactive`: Start an interactive REPL session.
+
+Any trailing `name=value` argument defines a variable for the expression (fixed variables can be combined with `-r` for the range variable itself).
 
 ### Examples:
 
@@ -140,15 +138,15 @@ The binary will be available at `./bin/eeval`.
 ./bin/eeval "sin(pi/2) + e"
 ```
 
+**Using custom variables:**
+```bash
+./bin/eeval "a^b + 10" a=5 b=2
+```
+
 **Range evaluation (vector calculation):**
 Evaluate `x^2 + sin(x)` for `x` from `0` to `10` with a step of `0.5`.
 ```bash
-./bin/eeval -v x -s 0 -e 10 -d 0.5 "x^2 + sin(x)"
-```
-
-**Using custom variables:**
-```bash
-./bin/eeval -D a=5 -D b=2 "a^b + 10"
+./bin/eeval -r x=0:10:0.5 "x^2 + sin(x)"
 ```
 
 **Interactive REPL:**

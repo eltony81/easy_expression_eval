@@ -103,6 +103,7 @@ module EEEval
         if (token.type != Token::Type::Operator)
           stack.push token
         else
+          raise "Invalid expression: missing operand for operator '#{token.value}'" if stack.size < 2
           operand2 = stack.pop
           operand1 = stack.pop
 
@@ -133,6 +134,8 @@ module EEEval
         end
         i = i + 1
       end
+      raise "Invalid expression: missing operator(s) between operands" if stack.size > 1
+      raise "Invalid expression: empty result" if stack.empty?
       stack.pop
     end
   end

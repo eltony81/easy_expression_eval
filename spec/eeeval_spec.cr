@@ -51,6 +51,14 @@ describe EEEval::CondParser do
       EEEval::CondParser.evaluate("-5.5 == -5.5").should eq(true)
       EEEval::CondParser.evaluate("+2.3 == 2.3").should eq(true)
     end
+
+    it "Raises instead of silently ignoring operands with a missing operator" do
+      expect_raises(Exception) { EEEval::CondParser.evaluate("1 1") }
+    end
+
+    it "Raises a clear error for a missing operand" do
+      expect_raises(Exception, /missing operand/) { EEEval::CondParser.evaluate("1 == ") }
+    end
   end
 end
 
@@ -124,6 +132,36 @@ describe EEEval::CalcParser do
       EEEval::CalcParser.evaluate("2.5 ^ +2").should eq(6.25)
     end
   end
+
+  describe "#evaluate", tags: "unary_precedence" do
+    it "Gives unary minus lower precedence than exponentiation (standard math convention)" do
+      EEEval::CalcParser.evaluate("-2^2").should eq(-4.0)
+      EEEval::CalcParser.evaluate("-2^2 + 1").should eq(-3.0)
+    end
+
+    it "Keeps unary minus binding tighter than exponentiation's right-hand operand" do
+      EEEval::CalcParser.evaluate("2^-3").should eq(0.125)
+    end
+
+    it "Keeps '^' right-associative" do
+      EEEval::CalcParser.evaluate("2^3^2").should eq(512.0)
+    end
+  end
+
+  describe "#evaluate", tags: "malformed" do
+    it "Raises instead of silently ignoring operands with a missing operator" do
+      expect_raises(Exception) { EEEval::CalcParser.evaluate("2 3") }
+      expect_raises(Exception) { EEEval::CalcFuncParser.evaluate("foo(1)") }
+    end
+
+    it "Raises a clear error for a trailing/missing operand" do
+      expect_raises(Exception, /missing operand/) { EEEval::CalcParser.evaluate("1 + ") }
+    end
+
+    it "Raises a clear error for mismatched parentheses instead of crashing" do
+      expect_raises(Exception, /Mismatched parentheses/) { EEEval::CalcParser.evaluate("(1+2))") }
+    end
+  end
 end
 
 
@@ -150,9 +188,9 @@ describe EEEval::CalcFuncParser do
   describe "#evaluate", tags: "multdiv_sign" do
     it "Resolve math func expr multdivsign" do
       expression = EEEval::CalcFuncParser.evaluate("(2*-0.3^2)+(2*-0.39999^2) ")
-      expression.should be_close(0.4999840002, 1e-10)
+      expression.should be_close(-0.4999840002, 1e-10)
       expression = EEEval::CalcFuncParser.evaluate("(2/-0.3^2) ")
-      expression.should be_close(22.22222222222222, 1e-10)
+      expression.should be_close(-22.22222222222222, 1e-10)
     end
   end
 
